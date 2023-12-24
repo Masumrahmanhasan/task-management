@@ -18,6 +18,7 @@ Route::post('/login',[\App\Http\Controllers\API\V1\AuthController::class, 'login
 Route::post('/register',[\App\Http\Controllers\API\V1\AuthController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function() {
-    Route::apiResource('/tasks', \App\Http\Controllers\API\V1\TaskController::class);
+    Route::apiResource('/categories', \App\Http\Controllers\API\V1\CategoryController::class);
+    Route::apiResource('/articles', \App\Http\Controllers\API\V1\ArticleController::class);
 });
 

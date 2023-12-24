@@ -16,23 +16,21 @@
                     </x-nav-link>
                 </div>
 
-                @can('user-read')
+                @can('category-read')
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                            {{ __('Users') }}
+                        <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
+                            {{ __('Categories') }}
                         </x-nav-link>
                     </div>
                 @endcan
 
-                @can('task-read')
+                @can('article-read')
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.index')">
-                            {{ __('Task') }}
+                        <x-nav-link :href="route('articles.index')" :active="request()->routeIs('articles.index')">
+                            {{ __('Articles') }}
                         </x-nav-link>
                     </div>
                 @endcan
-
-
 
             </div>
 

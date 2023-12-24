@@ -16,7 +16,8 @@ class PermissionTableSeeder extends Seeder
     {
         $permissions = [
             'User' => 'r',
-            'Task' => 'c,r,u,d',
+            'Category' => 'c,r,u,d',
+            'Article' => 'c,r,u,d',
         ];
 
         $mapPermission = [

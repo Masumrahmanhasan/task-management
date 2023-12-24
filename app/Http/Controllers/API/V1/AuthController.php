@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\RegistrationRequest;
 use App\Jobs\SendNewRegistrationNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
@@ -23,26 +24,22 @@ class AuthController extends Controller
         }
     }
 
-    public function register(Request $request)
+    public function register(RegistrationRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
+        $user = User::query()->create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
         ]);
 
         $user->attachRole('user');
 
-        dispatch(new SendNewRegistrationNotification($user));
+        SendNewRegistrationNotification::dispatchAfterResponse($user);
 
         Auth::login($user);
+
         $token = $user->createToken('MyAppToken')->accessToken;
+
         return $this->success(['access_token' => $token]);
     }
 }

@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 trait HasRolesPermissions
 {
     /**
-     * Assingn  permissions
+     * Assign permissions
      * @param mixed ...$permissions
      * @return $this
      */
-    public function givePermissionsTo(...$permissions)
+    public function givePermissionsTo(...$permissions): static
     {
         $permissions = $this->getAllPermissions($permissions);
         if ($permissions === null) {
@@ -28,14 +28,14 @@ trait HasRolesPermissions
      * @param mixed ...$permissions
      * @return $this
      */
-    public function detachPermissions(...$permissions)
+    public function detachPermissions(...$permissions): static
     {
         $permissions = $this->getAllPermissions($permissions);
         $this->permissions()->detach($permissions);
         return $this;
     }
 
-    public function attachRole($role)
+    public function attachRole($role): static
     {
         $roles = Role::query()->where('slug', $role)->first();
         $this->roles()->save($roles);
@@ -47,7 +47,7 @@ trait HasRolesPermissions
      * @param $permission
      * @return bool
      */
-    public function hasPermissionTo($permission)
+    public function hasPermissionTo($permission): bool
     {
         return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
     }
@@ -56,7 +56,7 @@ trait HasRolesPermissions
      * @param $permission
      * @return bool
      */
-    public function hasPermissionThroughRole($permission)
+    public function hasPermissionThroughRole($permission): bool
     {
         foreach ($permission->roles as $role) {
             if ($this->roles->contains($role)) {
@@ -70,7 +70,7 @@ trait HasRolesPermissions
      * @param $permission
      * @return bool
      */
-    protected function hasPermission($permission)
+    protected function hasPermission($permission): bool
     {
         return (bool)$this->permissions()->where('slug', $permission->slug)->count();
     }
@@ -79,7 +79,7 @@ trait HasRolesPermissions
      * @param mixed ...$roles
      * @return bool
      */
-    public function hasRole(...$roles)
+    public function hasRole(...$roles): bool
     {
         foreach ($roles as $role) {
             if ($this->roles->contains('slug', $role)) {
@@ -110,8 +110,8 @@ trait HasRolesPermissions
      * @param array $permissions
      * @return mixed
      */
-    protected function getAllPermissions(array $permissions)
+    protected function getAllPermissions(array $permissions): mixed
     {
-        return Permission::whereIn('slug', $permissions)->get();
+        return Permission::query()->whereIn('slug', $permissions)->get();
     }
 }
